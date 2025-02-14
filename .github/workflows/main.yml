@@ -1,0 +1,30 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+      - name: Moveto server 
+        run: 
+            echo "$EC2_KEY" | base64 --decode > /tmp/deploy-key.pem 
+            chmod 400 /tmp/deploy-key.pem 
+            mkdir -p ~/.ssh 
+            ssh-keyscan -H 44.202.111.28 >> ~/.ssh/known_hosts
+            ssh -i /tmp/deploy-key.pem ec2-user@44.202.111.28 'sudo mkdir -p /var/www/directory/ && sudo chmod -R 755 /var/www/directory/'
+            scp -i /tmp/deploy-key.pem -r *  44.202.111.28:/tmp/
+            ssh -i /tmp/deploy-key.pem ec2-user@44.202.111.28 'sudo mv /tmp/ /var/www/directory
