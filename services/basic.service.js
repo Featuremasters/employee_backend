@@ -72,4 +72,4 @@ async function updateUser(up, id, res) {
 function deleteById(id) {
     return Basics.destroy({ where: { id: id } });
 }
-module.exports = basicService;
+module.exports = basicService; //comand
