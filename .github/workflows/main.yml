@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 16
 
       - name: Install Dependencies
         run: npm install
@@ -24,16 +24,16 @@ jobs:
             echo "$EC2_KEY" | base64 --decode > /tmp/deploy-key.pem
             - chmod 400 /tmp/deploy-key.pem
             - mkdir -p ~/.ssh
-            - ssh-keyscan -H 44.202.111.28 >> ~/.ssh/known_hosts
+            - ssh-keyscan -H <> >> ~/.ssh/known_hosts
 
-            - ssh -i /tmp/deploy-key.pem ec2-user@44.202.111.28 << 'EOF'
+            - ssh -i /tmp/deploy-key.pem ec2-user@<> << 'EOF'
                 sudo mkdir -p /var/www/directory/
                 sudo chmod -R 755 /var/www/directory/
               EOF
 
-            - scp -i /tmp/deploy-key.pem -r * ec2-user@44.202.111.28:/tmp/
+            - scp -i /tmp/deploy-key.pem -r * ec2-user@<>:/tmp/
 
-            - ssh -i /tmp/deploy-key.pem ec2-user@44.202.111.28 << 'EOF'
+            - ssh -i /tmp/deploy-key.pem ec2-user@<> << 'EOF'
                 sudo mv /tmp/* /var/www/directory/
                 sudo systemctl restart nginx
                 sudo pm2 restart <app-name>
